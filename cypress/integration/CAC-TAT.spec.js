@@ -10,14 +10,7 @@ describe('TAT Customer Service Center', function () {
   });
 
   it('fills the required fields and submits the form', function () {
-    const longText =
-      'Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora commodi explicabo possimus consectetur. Dignissimos deserunt sequi, vel iste delectus illo? Tempora voluptas sequi similique, modi illum ea voluptate pariatur aliquam?';
-    cy.get('#firstName').type('John');
-    cy.get('#lastName').type('Doe');
-    cy.get('#email').type('John@mail.com');
-    cy.get('#open-text-area').type(longText, { delay: 1 });
-    cy.get('button[type="submit"]').click();
-
+    cy.fillRequiredFieldsAndSubmit();
     cy.get('.success').should('be.visible');
   });
 
@@ -26,7 +19,7 @@ describe('TAT Customer Service Center', function () {
     cy.get('#lastName').type('Doe');
     cy.get('#email').type('John.mail.com');
     cy.get('#open-text-area').type('this is a test message');
-    cy.get('button[type="submit"]').click();
+    cy.contains('button', 'Enviar').click();
 
     cy.get('.error').should('be.visible');
   });
@@ -41,7 +34,7 @@ describe('TAT Customer Service Center', function () {
     cy.get('#email').type('John@mail.com');
     cy.get('#phone-checkbox').click();
     cy.get('#open-text-area').type('this is a test message');
-    cy.get('button[type="submit"]').click();
+    cy.contains('button', 'Enviar').click();
 
     cy.get('.error').should('be.visible');
   });
