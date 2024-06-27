@@ -9,8 +9,11 @@ describe('TAT Customer Service Center', function () {
     cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT');
   });
 
+  //Finding, Typing, Clicking on Elements
+
   it('fills the required fields and submits the form', function () {
-    cy.fillRequiredFieldsAndSubmit();
+    cy.fillRequiredFieldsAndSubmit(); //custom command
+
     cy.get('.success').should('be.visible');
   });
 
@@ -32,10 +35,50 @@ describe('TAT Customer Service Center', function () {
     cy.get('#firstName').type('John');
     cy.get('#lastName').type('Doe');
     cy.get('#email').type('John@mail.com');
-    cy.get('#phone-checkbox').click();
+    cy.get('#phone-checkbox').check();
     cy.get('#open-text-area').type('this is a test message');
     cy.contains('button', 'Enviar').click();
 
     cy.get('.error').should('be.visible');
+  });
+
+  //SELECT
+
+  it('selects a product (YouTube) by its text', function () {
+    cy.get('#product').select('YouTube').should('have.value', 'youtube');
+  });
+
+  it('selects a product (Mentoria) by its value', function () {
+    cy.get('#product').select('mentoria').should('have.value', 'mentoria');
+  });
+
+  it('selects a product (Blog) by its index', function () {
+    cy.get('#product').select(1).should('have.value', 'blog');
+  });
+
+  //RADIO BUTTONS
+
+  it('marks service feedback', function () {
+    cy.get('input[type="radio"][value="feedback"]')
+      .check()
+      .should('be.checked');
+  });
+
+  it('marks each type of service', function () {
+    cy.get('input[type="radio"]')
+      .should('have.length', 3)
+      .each(($radio) => {
+        cy.wrap($radio).check().should('be.checked');
+      });
+  });
+
+  //CHECKBOX check and uncheck
+
+  it.only('check two checkboxes, then uncheck the last one', function () {
+    cy.get('input[type="checkbox"]')
+      .check()
+      .last()
+      .uncheck()
+      .should('not.be.checked');
   });
 });
