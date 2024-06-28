@@ -106,7 +106,7 @@ describe('TAT Customer Service Center', function () {
   });
 
   // FILE UPLOAD ALIAS
-  it.only('select a file by alias', function () {
+  it('select a file by alias', function () {
     cy.fixture('example.json').as('sampleFile');
     cy.get('input[type="file"]#file-upload')
       .should('not.have.value')
@@ -115,5 +115,20 @@ describe('TAT Customer Service Center', function () {
         expect(input[0].files).not.to.equal(0);
         expect(input[0].files[0].name).to.equal('example.json');
       });
+  });
+
+  // LINKS THAT OPEN IN A NEW TAB
+
+  it('Verifies that the privacy policy page opens in another tab without the need for a click', function () {
+    cy.get('#privacy a').should('have.attr', 'target', '_blank');
+  });
+
+  // remove the target attribute
+  it('access the privacy policy page by removing the target and then clicking the link', function () {
+    cy.get('#privacy a')
+      .should('have.attr', 'target', '_blank')
+      .invoke('removeAttr', 'target')
+      .click();
+    cy.contains('Talking About Testing').should('be.visible');
   });
 });
