@@ -67,18 +67,53 @@ describe('TAT Customer Service Center', function () {
   it('marks each type of service', function () {
     cy.get('input[type="radio"]')
       .should('have.length', 3)
-      .each(($radio) => {
-        cy.wrap($radio).check().should('be.checked');
+      .each((radio) => {
+        cy.wrap(radio).check().should('be.checked');
       });
   });
 
   //CHECKBOX check and uncheck
 
-  it.only('check two checkboxes, then uncheck the last one', function () {
+  it('check two checkboxes, then uncheck the last one', function () {
     cy.get('input[type="checkbox"]')
       .check()
       .last()
       .uncheck()
       .should('not.be.checked');
+  });
+
+  // FILE UPLOAD
+
+  it('selects a file from the fixtures folder', function () {
+    cy.get('input[type="file"]#file-upload')
+      .should('not.have.value')
+      .selectFile('./cypress/fixtures/example.json')
+      .should((input) => {
+        expect(input[0].files).not.to.equal(0);
+        expect(input[0].files[0].name).to.equal('example.json');
+      });
+  });
+
+  // FILE UPLOAD DRAG AND DROP
+  it('selects a file by simulating drag and drop', function () {
+    cy.get('input[type="file"]#file-upload')
+      .should('not.have.value')
+      .selectFile('./cypress/fixtures/example.json', { action: 'drag-drop' })
+      .should((input) => {
+        expect(input[0].files).not.to.equal(0);
+        expect(input[0].files[0].name).to.equal('example.json');
+      });
+  });
+
+  // FILE UPLOAD ALIAS
+  it.only('select a file by alias', function () {
+    cy.fixture('example.json').as('sampleFile');
+    cy.get('input[type="file"]#file-upload')
+      .should('not.have.value')
+      .selectFile('@sampleFile') //select file by alias
+      .should((input) => {
+        expect(input[0].files).not.to.equal(0);
+        expect(input[0].files[0].name).to.equal('example.json');
+      });
   });
 });
