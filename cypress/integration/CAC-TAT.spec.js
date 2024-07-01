@@ -13,18 +13,21 @@ describe('TAT Customer Service Center', function () {
 
   it('fills the required fields and submits the form', function () {
     cy.fillRequiredFieldsAndSubmit(); //custom command
-
     cy.get('.success').should('be.visible');
   });
 
   it('displays an error message when submitting the form with an invalid email format', function () {
+    cy.clock(); // freeze time
+
     cy.get('#firstName').type('John');
     cy.get('#lastName').type('Doe');
     cy.get('#email').type('John.mail.com');
     cy.get('#open-text-area').type('this is a test message');
     cy.contains('button', 'Enviar').click();
-
     cy.get('.error').should('be.visible');
+
+    cy.tick(3000); // advance 3 seconds in time
+    cy.get('.error').should('not.be.visible');
   });
 
   it('keeps the phone field empty if a non-numeric value is entered', function () {
@@ -32,14 +35,17 @@ describe('TAT Customer Service Center', function () {
   });
 
   it('displays an error message when the phone number becomes required but is not filled in before submitting the form', function () {
+    cy.clock();
     cy.get('#firstName').type('John');
     cy.get('#lastName').type('Doe');
     cy.get('#email').type('John@mail.com');
     cy.get('#phone-checkbox').check();
     cy.get('#open-text-area').type('this is a test message');
     cy.contains('button', 'Enviar').click();
-
     cy.get('.error').should('be.visible');
+
+    cy.tick(3000);
+    cy.get('.error').should('not.be.visible');
   });
 
   //SELECT
@@ -130,5 +136,30 @@ describe('TAT Customer Service Center', function () {
       .invoke('removeAttr', 'target')
       .click();
     cy.contains('Talking About Testing').should('be.visible');
+  });
+
+  // Invoke() - show and hide elements
+  it('display and hide success and error messages using .invoke', function () {
+    cy.get('.success')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Mensagem enviada com sucesso.')
+      .invoke('hide')
+      .should('not.be.visible');
+    cy.get('.error')
+      .should('not.be.visible')
+      .invoke('show')
+      .should('be.visible')
+      .and('contain', 'Valide os campos obrigatórios!')
+      .invoke('hide')
+      .should('not.be.visible');
+  });
+
+  it('fills the text area using the invoke command', function () {
+    const text = Cypress._.repeat('lorem ', 100);
+    cy.get('#open-text-area')
+      .invoke('val', text) // set the value of the textarea
+      .should('have.value', text);
   });
 });
