@@ -162,4 +162,16 @@ describe('TAT Customer Service Center', function () {
       .invoke('val', text) // set the value of the textarea
       .should('have.value', text);
   });
+
+  // HTTP REQUEST
+  it('makes an HTTP request', function () {
+    cy.request(
+      'https://cac-tat.s3.eu-central-1.amazonaws.com/index.html'
+    ).should((response) => {
+      expect(response.status).to.eq(200);
+      expect(response.statusText).to.eq('OK');
+      expect(response.body).to.include('CAC TAT');
+      expect(response.headers['content-type']).to.include('text/html');
+    });
+  });
 });
